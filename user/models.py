@@ -3,11 +3,12 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
+
 # Create your models here.
 class UserProfileMananger(BaseUserManager):
-    """help work with custom model"""
+    """helps to set custom model for the application"""
 
-    def create_user(self,email, name, password=None):
+    def create_user(self, email, name, password=None):
         """create new user object"""
 
         if not email:
@@ -16,19 +17,19 @@ class UserProfileMananger(BaseUserManager):
         user = self.model(
             email=email,
             name=name
-            )
+        )
         user.set_password(password)
         user.save(using=self._db)
 
         return user
-    
-    def create_superuser(self,email, name, password):
+
+    def create_superuser(self, email, name, password):
         """Creates and saves superuser"""
 
         user = self.create_user(email, name, password)
         user.is_superuser = True
         user.is_staff = True
-        
+
         user.save(using=self._db)
 
         return user
@@ -36,7 +37,7 @@ class UserProfileMananger(BaseUserManager):
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """
-    Represent user profile outside the system
+    Represent user profile model outside the system
     """
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -44,7 +45,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
 
     objects = UserProfileMananger()
-    
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]
 
@@ -54,17 +55,8 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """
         return self.name
 
-    def get_short_name(self):
-        """
-        used to get user short name
-        """
-        return self.name
-
     def __str__(self):
         """
         Used to convert an object to string
         """
         return self.email
-
-
-
